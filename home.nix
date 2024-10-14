@@ -3,6 +3,11 @@ let
   username = "kaung-min-khant";
   homeDirectory = "/home/${username}";
   relativeHomeDirectory = ../..;
+
+  dotfiles = pkgs.fetchgit {
+    url = "https://github.com/kaung-minkhant/dotfiles.git";
+    hash = "sha256-xEeqvAjDHqo+BKAtlhaIHpGHYVZvTxnbLQX5lG8VOJg="; 
+  };
 in
 {
   home.username = username;
@@ -97,6 +102,12 @@ in
       enable = true;
       userEmail = "kaungminkhant.official@gmail.com";
       userName = "kaung-minkhant";
+      aliases = {
+        co = "checkout";
+        br = "branch";
+        st = "status";
+        cm = "commit";
+      };
     };
     vim = {
       enable = true;
@@ -153,10 +164,10 @@ in
     # # symlink to the Nix store copy.
     #".screenrc".source = /home/kaung-min-khant/dotfiles/screenrc;
     #"config/.hello".source = dotfiles/hello;
-    "hello" = {
-      source = homeDirectory + "/dotfiles/hello";
-      target = "/config/.hello";
-      enable = false;
+    "sample" = {
+      source = dotfiles + "/sample";
+      target = "/config/.sample";
+      enable = true;
     };
 
     # # You can also set the file content immediately.
