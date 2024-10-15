@@ -4,18 +4,24 @@ let
   homeDirectory = "/home/${username}";
   relativeHomeDirectory = ../..;
 
-  dotfiles = pkgs.fetchgit {
+  dotfilesGit = pkgs.fetchgit {
     url = "https://github.com/kaung-minkhant/dotfiles.git";
     hash = "sha256-xEeqvAjDHqo+BKAtlhaIHpGHYVZvTxnbLQX5lG8VOJg="; 
   };
+
+  dotfilesLocal = homeDirectory + "/dotfiles";
+
+  dotfiles = dotfilesLocal;
 in
 {
+  imports = [ ./modules/tmux.nix];
   home.username = username;
   home.homeDirectory = homeDirectory;
 
   home.stateVersion = "24.05";
 
   home.packages = with pkgs; [
+    blesh
 		# version control
     gh
 
@@ -26,6 +32,9 @@ in
 		p7zip
 
 		# utils
+    moreutils
+    wl-clipboard-x11
+    wl-clipboard
     curl
     neofetch
     ripgrep # recursively searches directories for a regex pattern
@@ -95,6 +104,11 @@ in
     telegram-desktop
     discord
     whatsapp-for-linux
+    neovim
+
+    # other dependencies
+    nodejs_22
+    go
   ];
 
   programs = {
@@ -116,6 +130,7 @@ in
         number = true;
         tabstop = 2;
         shiftwidth = 2;
+        expandtab = true;
       };
       extraConfig = ''
         imap jj <Esc>
@@ -154,6 +169,9 @@ in
       nix-direnv.enable = true;
     };
     bash.enable = false;
+    starship = {
+      enable = true;
+    };
   };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -166,10 +184,20 @@ in
     #"config/.hello".source = dotfiles/hello;
     "sample" = {
       source = dotfiles + "/sample";
-      target = "/config/.sample";
+      target = "/.config/.sample";
       enable = true;
     };
-
+    "starship" = {
+      source = dotfiles + "/starship.toml";
+      target = "/.config/starship.toml";
+      enable = true;
+    };
+    "nvim" = {
+      source = dotfiles + "/nvim";
+      target = "/.config/nvim";
+      recursive = true;
+      enable = true;
+    };
     # # You can also set the file content immediately.
     # ".gradle/gradle.properties".text = ''
     #   org.gradle.console=verbose
