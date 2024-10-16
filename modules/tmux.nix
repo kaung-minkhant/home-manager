@@ -54,19 +54,34 @@
         '';
       }
     ];
-    shortcut = "a"; # prefix
+    shortcut = "j"; # prefix
     sensibleOnTop = false;
     shell = null;
     terminal = "screen-256color";
     tmuxinator.enable = false;
     newSession = false; # Automatically spawn a session if trying to attach and none are running.
     extraConfig = ''
+      unbind-key -T copy-mode-vi Space
+      unbind-key -T copy-mode-vi 'v'
+      unbind-key '"'
+      unbind-key %
+
+      bind H previous-window
+      bind L next-window
+      bind h select-pane -L
+      bind j select-pane -D
+      bind k select-pane -U
+      bind l select-pane -R
+      bind r command-prompt "rename-window %%"
+      bind | split-window
+      bind s split-window -v -c "#{pane_current_path}"
+      bind v split-window -h -c "#{pane_current_path}"
       set -g display-time 2000
       set -g renumber-windows on
       set -g set-clipboard on
-      unbind-key -T copy-mode-vi Space
-      unbind-key -T copy-mode-vi 'v'
       bind -T copy-mode-vi v send -X begin-selection
+      set -g pane-active-border-style 'fg=magenta,bg=default'
+      set -g pane-border-style 'fg=brightblack,bg=default'
     '';
   };
 }
